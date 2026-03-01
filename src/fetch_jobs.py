@@ -50,23 +50,34 @@ def make_job_id(job: dict) -> str:
     return f"{company}--{title}"
 
 
-def fetch_jobs_for_query(query: str, config: dict) -> pd.DataFrame:
+def fetch_jobs_for_query(query: str, config: dict, location_override: str = None,
+                         results_override: int = None) -> pd.DataFrame:
     """Run a single jobspy search and return results as a DataFrame."""
     search_config = config["search"]
 
+    location = location_override or search_config.get("location", "Irving, TX")
+    results_wanted = results_override or search_config.get("results_per_query", 20)
+    # Skip distance filter for US-wide searches
+    distance = None if location_override else search_config.get("distance_miles", 25)
+
     try:
-        jobs_df = scrape_jobs(
+        kwargs = dict(
             site_name=search_config.get("sites", ["indeed", "linkedin"]),
             search_term=query,
-            location=search_config.get("location", "Irving, TX"),
-            distance=search_config.get("distance_miles", 25),
-            results_wanted=search_config.get("results_per_query", 20),
+            location=location,
+            results_wanted=results_wanted,
             hours_old=search_config.get("hours_old", 24),
             job_type=search_config.get("job_type", "fulltime"),
             description_format="markdown",
             linkedin_fetch_description=True,
             country_indeed="USA",
+            is_remote=True if location_override else None,
         )
+        if distance is not None:
+            kwargs["distance"] = distance
+        # Remove None values
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+        jobs_df = scrape_jobs(**kwargs)
     except Exception as e:
         print(f"  [ERROR] jobspy request failed for '{query}': {e}", file=sys.stderr)
         return pd.DataFrame()
@@ -163,34 +174,50 @@ def main():
     all_jobs = []
     run_ids = set()  # dedup within this run
 
+    # Collect all search batches: (label, queries_list, location_override, results_override)
+    batches = [("local", queries, None, None)]
+
+    remote_config = config.get("remote_search", {})
+    if remote_config.get("enabled", False):
+        remote_queries = remote_config.get("queries", [])
+        remote_location = remote_config.get("location", "United States")
+        remote_results = remote_config.get("results_per_query", 20)
+        batches.append(("remote", remote_queries, remote_location, remote_results))
+
+    total_queries = sum(len(b[1]) for b in batches)
     print(f"[fetch_jobs] Date: {today}")
-    print(f"[fetch_jobs] Running {len(queries)} queries...")
+    print(f"[fetch_jobs] Running {total_queries} queries ({len(batches)} batches)...")
 
-    for query in queries:
-        print(f"\n  Query: \"{query}\"")
-        jobs_df = fetch_jobs_for_query(query, config)
-        print(f"  Found {len(jobs_df)} raw results")
+    for batch_label, batch_queries, loc_override, res_override in batches:
+        if batch_label == "remote":
+            print(f"\n--- Remote US-wide queries ---")
 
-        for _, row in jobs_df.iterrows():
-            job = normalize_job(row, query)
-            job_id = make_job_id(job)
-            job["job_id"] = job_id
+        for query in batch_queries:
+            print(f"\n  Query: \"{query}\"{' [remote US-wide]' if loc_override else ''}")
+            jobs_df = fetch_jobs_for_query(query, config, location_override=loc_override,
+                                           results_override=res_override)
+            print(f"  Found {len(jobs_df)} raw results")
 
-            if job_id in seen_ids or job_id in run_ids:
-                print(f"    SKIP (seen): {job_id}")
-                continue
+            for _, row in jobs_df.iterrows():
+                job = normalize_job(row, query)
+                job_id = make_job_id(job)
+                job["job_id"] = job_id
 
-            if is_excluded(job, excluded):
-                print(f"    SKIP (excluded): {job['company_name']}")
-                continue
+                if job_id in seen_ids or job_id in run_ids:
+                    print(f"    SKIP (seen): {job_id}")
+                    continue
 
-            if not is_location_match(job, config):
-                print(f"    SKIP (location): {job['location']} - {job['title']}")
-                continue
+                if is_excluded(job, excluded):
+                    print(f"    SKIP (excluded): {job['company_name']}")
+                    continue
 
-            run_ids.add(job_id)
-            all_jobs.append(job)
-            print(f"    ADD: {job_id}")
+                if not is_location_match(job, config):
+                    print(f"    SKIP (location): {job['location']} - {job['title']}")
+                    continue
+
+                run_ids.add(job_id)
+                all_jobs.append(job)
+                print(f"    ADD: {job_id}")
 
     # Write output
     output_file = output_dir / "jobs_raw.json"
