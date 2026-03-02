@@ -1,0 +1,43 @@
+user:
+  name: "Your Name"
+  email: "your.email@example.com"
+  phone: "(555)-000-0000"
+  linkedin: "https://www.linkedin.com/in/yourprofile/"
+  location: "City, ST"
+
+search:
+  queries:
+    - "Senior Software Engineer distributed systems"
+    - "Software Development Engineer Java"
+    - "Backend Engineer cloud infrastructure"
+  location: "City, ST"
+  distance_miles: 25
+  hours_old: 24
+  job_type: "fulltime"
+  results_per_query: 20
+  sites:
+    - "indeed"
+    - "linkedin"
+    - "zip_recruiter"
+    - "glassdoor"
+
+remote_search:
+  enabled: true
+  queries:
+    - "Senior Software Engineer remote"
+    - "Backend Engineer distributed systems remote"
+  location: "United States"
+  results_per_query: 20
+
+filters:
+  preferred_locations:
+    - "City, ST"
+  include_remote: true
+  excluded_companies:
+    - "Revature"
+  excluded_industries:
+    - "banking"
+
+output:
+  top_n: 5
+  output_dir: "output"

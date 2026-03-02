@@ -1,0 +1,46 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[sfdefault]{carlito}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{parskip}
+
+% Formatting adjustments
+\titleformat{\section}{\bfseries\Large}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\bfseries\normalsize}{}{0em}{}
+\setlist[itemize]{noitemsep, topsep=0pt}
+
+\begin{document}
+
+% Header
+\begin{center}
+    {\LARGE\textbf{Your Name}} \\[6pt]
+    City, ST 00000 \enspace$\cdot$\enspace (555)-000-0000 \enspace$\cdot$\enspace \href{mailto:you@example.com}{you@example.com} \enspace$\cdot$\enspace \href{https://www.linkedin.com/in/yourprofile/}{linkedin.com/in/yourprofile}
+\end{center}
+
+\section*{Professional Summary}
+% Add your professional summary here.
+
+\section*{Technical Skills}
+\begin{itemize}
+    \item \textbf{Languages}: Java, Python, SQL
+    \item \textbf{Cloud \& Infrastructure}: AWS, Docker, Git
+\end{itemize}
+
+\section*{Professional Experience}
+
+\subsection*{Your Job Title}
+\textit{Company Name} \hfill \textit{City, ST} \\
+\textbf{Start Date -- End Date} \\
+\begin{itemize}
+    \item Describe your accomplishments here.
+\end{itemize}
+
+\section*{Education}
+\begin{itemize}
+    \item \textbf{Degree} \hfill \textit{University, Year}
+\end{itemize}
+
+\end{document}

@@ -1,6 +1,10 @@
 # Environment
 .env
 
+# Personal data (PII)
+config.yaml
+resume.tex
+
 # Python
 __pycache__/
 *.pyc
