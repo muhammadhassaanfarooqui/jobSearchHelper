@@ -1,6 +1,3 @@
-# Environment
-.env
-
 # Personal data (PII)
 config.yaml
 resume.tex

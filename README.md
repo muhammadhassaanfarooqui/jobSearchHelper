@@ -13,17 +13,12 @@ pip install -r requirements.txt
 
 ## Configuration
 
-1. **API key** -- Copy `.env.example` to `.env` and add your [SerpAPI](https://serpapi.com/) key:
-   ```
-   cp .env.example .env
-   ```
-
-2. **Search config** -- Copy `config.example.yaml` to `config.yaml` and fill in your details (name, email, search queries, location preferences, filters):
+1. **Search config** -- Copy `config.example.yaml` to `config.yaml` and fill in your details (name, email, search queries, location preferences, filters):
    ```
    cp config.example.yaml config.yaml
    ```
 
-3. **Resume** -- Copy `resume.example.tex` to `resume.tex` and replace with your own LaTeX resume:
+2. **Resume** -- Copy `resume.example.tex` to `resume.tex` and replace with your own LaTeX resume:
    ```
    cp resume.example.tex resume.tex
    ```
@@ -39,7 +34,7 @@ This project is designed to run end-to-end via [Claude Code](https://claude.com/
 ```
 
 This single command will:
-1. Fetch jobs from LinkedIn, Indeed, Glassdoor, and ZipRecruiter via SerpAPI
+1. Fetch jobs from LinkedIn, Indeed, Glassdoor, and ZipRecruiter
 2. Filter out excluded companies and industries
 3. Score and rank every job against your resume (skills 40%, experience 30%, fit 30%)
 4. Pick the top N matches (configured in `config.yaml`)
@@ -78,7 +73,6 @@ src/
   config.py          # Config loader
 config.yaml          # Your search config (gitignored)
 resume.tex           # Your resume (gitignored)
-.env                 # API keys (gitignored)
 output/              # Daily results (gitignored)
 history/             # Seen-job dedup history (gitignored)
 ```

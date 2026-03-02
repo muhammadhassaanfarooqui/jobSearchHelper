@@ -8,7 +8,7 @@ You are running the daily job search pipeline. Follow each step below precisely 
 
 ## Step 1: Fetch Jobs
 
-Run the Python script to fetch jobs from Google Jobs via SerpAPI:
+Run the Python script to fetch jobs:
 
 ```
 cd /home/hassaan/workplace/jobSearchHelper/src && /home/hassaan/workplace/jobSearchHelper/.venv/bin/python fetch_jobs.py
@@ -16,7 +16,7 @@ cd /home/hassaan/workplace/jobSearchHelper/src && /home/hassaan/workplace/jobSea
 
 This outputs `output/YYYY-MM-DD/jobs_raw.json`. Read that file.
 
-If the script fails (e.g., missing API key), stop and tell the user what went wrong.
+If the script fails, stop and tell the user what went wrong.
 
 ## Step 2: Read Resume
 
