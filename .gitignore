@@ -12,6 +12,7 @@ __pycache__/
 .venv/
 venv/
 .claude/
+!.claude/commands/
 
 # Output (daily results)
 output/
