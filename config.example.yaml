@@ -7,7 +7,7 @@ user:
 
 search:
   queries:
-    - "Senior Software Engineer distributed systems"
+    - "Software Engineer distributed systems"
     - "Software Development Engineer Java"
     - "Backend Engineer cloud infrastructure"
   location: "City, ST"
@@ -24,7 +24,7 @@ search:
 remote_search:
   enabled: true
   queries:
-    - "Senior Software Engineer remote"
+    - "Software Engineer remote"
     - "Backend Engineer distributed systems remote"
   location: "United States"
   results_per_query: 20
